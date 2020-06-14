@@ -30,7 +30,7 @@ class AdminPostController extends Controller
     		$dtS = new Carbon('now');
     		$dtSt = $dtS->setTime(12, 00, 00);
     		if($dt >= $dtSt){
-    			$pageVer = 2;
+    			$pageVer = 1;
     		}else{
     			$pageVer= 2;
     		}
