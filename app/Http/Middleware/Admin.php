@@ -16,7 +16,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        //ユーザーがログインsているかどうかをauth()->check()で確認。ログインしていてかつ、。admin==1の場合という条件になる
+        //ユーザーがログインしているかどうかをAuth::check()で確認。ログインしていてかつ、。admin==1の場合という条件になる
         if(Auth::check() && Auth::user()->is_admin == 1) {
             return $next($request);
         }
