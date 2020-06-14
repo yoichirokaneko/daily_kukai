@@ -18,8 +18,8 @@ class CreatePostsTable extends Migration
             $table->integer('user_id')->unsigned()->index();
             $table->text('body');
             $table->integer('point')->default(0);
-            $table->integer('correct_time')->default(0);
-            $table->boolean('display')->default(1);
+            $table->integer('correct_time')->default(2);
+            $table->integer('display')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

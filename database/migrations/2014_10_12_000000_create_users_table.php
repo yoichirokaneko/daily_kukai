@@ -20,8 +20,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('prefecture');
-            $table->integer('vote_time')->default(0);
-            $table->integer('post_time')->default(0);
+            $table->integer('vote_time')->default(4);
+            $table->integer('post_time')->default(5);
             $table->boolean('is_admin')->nullable();
             $table->rememberToken();
             $table->timestamps();

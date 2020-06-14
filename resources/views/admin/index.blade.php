@@ -1,17 +1,18 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('content')
 <div class="container">
  	<h1>俳句一覧</h1>
- 	<p>投句はログインユーザーでなければ行えません。</p>
- 	<p>１週間で1人5句まで投稿、4回まで投票できます。</p>
+ 	<p>投句、投票はログインユーザーでなければ行えません。</p>
+ 	<p>１週間で1人5句まで投句、4回まで投票できます。</p>
+ 	<p></p>
  	@guest
  	@else
 	 	<p>今週は残り{{$user->post_time}}回投稿できます。残り{{$user->vote_time}}回投票できます。</p>
 	 	<p>自分の投句は黄色で表示されます。自分が投票した俳句は青色で表示されます。</p>
 	 	<p>自分の投句にのみ、管理人のコメントが表示されます。</p>
  	@endguest
- 	<form method="POST" action="{{ action('PostController@store') }}">
+ 	<form method="POST" action="{{ action('AdminPostController@store') }}">
  		@csrf
  		<div class="form-group">
  			<label for="body">投句欄</label>
@@ -24,7 +25,7 @@
 	@foreach($posts as $post)
 	<div class="card">
 		<?php $voted = 0 ?>
-		<div class="card-body 
+		<div class="card-body
 			<?php
 				if($uvls != null){
 					foreach($uvls as $uvl){
@@ -42,11 +43,10 @@
 			?>
 		">
 		<h5><?php echo $i ?>：{!! nl2br(e($post->body)) !!}</h5>
+		<p class="card-text">投稿者：{{$post->user->name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
 		<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
-		@guest
-		@else
 			@if(Auth::user()->id <> $post->user_id)
-				<form method="POST" action="{{action('PostController@point')}}">
+				<form method="POST" action="{{action('AdminPostController@point')}}">
 				    @csrf
 				    @method('PUT')
 				    <input type="hidden" name="data[0]" value="{{$voted}}">
@@ -55,23 +55,24 @@
 				</form>
 			@endif
 			@if(Auth::user()->id == $post->user_id)
-			<a href="{{ action('PostController@edit', $post->id) }}"  class="btn btn-primary">修正</a>
+			<a href="{{ action('AdminPostController@edit', $post->id) }}"  class="btn btn-primary">修正</a>
 			@endif
-		@endguest
+			<a href="{{ action('AdminCommentController@index', $post->id) }}"  class="btn btn-primary">コメント追加</a>
+			<form method="POST" action="{{action('AdminPostController@delete')}}">
+				    @csrf
+				    @method('DELETE')
+				    <input type="hidden" name="post_id" value="{{$post->id}}">
+				    <input type="submit" value="削除" class="btn btn-danger">
+			</form>
 		</div>
-		@guest
-		@else
-			@if(Auth::user()->id == $post->user_id)
-				@foreach($comments as $comment)
-					@if($comment->post_id == $post->id)
-					<div class="card-footer">
-						<p class="card-text">{!! nl2br(e($comment->body)) !!}</p>
-						<p class="card-text">投稿日時：{{$comment->created_at}}　更新日時：{{$comment->updated_at}}</p>
-					</div>
-					@endif
-				@endforeach
-			@endif
-		@endguest
+			@foreach($comments as $comment)
+				@if($comment->post_id == $post->id)
+				<div class="card-footer">
+					<p class="card-text">{!! nl2br(e($comment->body)) !!}</p>
+					<p class="card-text">投稿日時：{{$comment->created_at}}　更新日時：{{$comment->updated_at}}</p>
+				</div>
+				@endif
+			@endforeach
 	</div>
 	<?php $i = $i + 1 ?>
 	@endforeach

@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
+use Carbon\Carbon;
+use App\Post;
+use App\Comment;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\VoteLog;
+
+class AdminPostController extends Controller
+{
+    public function  index(){
+    	$dt = new Carbon('now');
+    	$dtW = $dt->dayOfWeekIso;
+    	if($dtW == 5){
+    		$dtF = new Carbon('now');
+    		$dtFt = $dtF->setTIme(18, 00, 00);
+    		if($dt >= $dtFt){
+    			$pageVer = 2;
+    		}else{
+    			$pageVer = 1;
+    		}
+    	}elseif($dtW == 6){
+    		$pageVer = 2;
+    	}elseif($dtW == 7){
+    		$dtS = new Carbon('now');
+    		$dtSt = $dtS->setTime(12, 00, 00);
+    		if($dt >= $dtSt){
+    			$pageVer = 2;
+    		}else{
+    			$pageVer= 2;
+    		}
+    	}else{
+    		$pageVer = 1;
+        }
+
+		if($pageVer == 1){
+        //必要な情報をテーブルから全て取得する
+            $posts = Post::where('display', 0)->latest()->with('user')->get();
+            $comments = Comment::where('display', 0)->latest()->with('post')->get();
+            $user = Auth::user();
+            $uvls = VoteLog::where('user_id', $user->id)->get();
+            return view('admin.index', [
+                'posts' => $posts,
+                'comments' => $comments,
+                'user' => $user,
+                'uvls' => $uvls,
+            ]);
+        }elseif($pageVer == 2){
+            $posts = Post::where('display', 0)->orderBy('point', 'desc')->with('user')->get();
+            $comments = Comment::where('display', 0)->latest()->get();
+            return view('admin.index2',[
+                'posts' => $posts,
+                'comments' => $comments,
+            ]);
+        }
+    }
+
+    //新規投稿時の処理
+    public function store(PostRequest $request){
+        $user = Auth::user();
+        $post_user = User::where('id', $user->id);
+        $post_time = $post_user->value('post_time');
+        if($post_time >= 1){
+            $post_user->decrement('post_time');
+            $post = Post::create([
+                'user_id' => $user->id,
+                'body' => $request->body,
+            ]);
+            return redirect('/admin');
+        }else{
+            return redirect('/admin');
+        }
+    }
+    //投票時の処理
+    public function point(Request $request){
+        $user = Auth::user();
+        $vote_user = User::where('id', $user->id);
+        $vote_time = $vote_user->value('vote_time');
+        if($vote_time >= 1 && $request->data[0] == 0){
+            //ユーザーの投票回数を加算
+            $vote_user->decrement('vote_time');
+            //投票ログの登録
+            $vote_log = VoteLog::create([
+                'user_id' => $user->id,
+                'post_id' => $request->data[1],
+            ]);
+            //投票された俳句にポイントを加算
+            $voted_post = Post::where('id', $request->data[1]);
+            $voted_post->increment('point');
+            return redirect('/admin');
+        }else{
+            return redirect('/admin');
+        }
+    }
+
+    public function edit($post_id){
+        $post = Post::findOrFail($post_id);
+        $comments = Comment::where('display', 1)->latest()->get();
+        return view('admin.post.edit', [
+            'post' => $post,
+            'comments' => $comments,
+        ]);
+    }
+
+    public function update(Request $request, $post_id){
+        $post = Post::findOrFail($post_id);
+        if($post->correct_time >= 1){
+            $post->decrement('correct_time');
+            $post->update([
+                'body' => $request->body,
+            ]);
+        }
+        return redirect('/admin');
+    }
+
+    public function delete(Request $request){
+        $post = Post::findOrFail($request->post_id);
+        $post->delete();
+        return redirect('/admin');
+    }
+}

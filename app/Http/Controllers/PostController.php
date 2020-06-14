@@ -38,27 +38,37 @@ class PostController extends Controller
     	}else{
     		$pageVer = 1;
     	}
-		//必要な情報をテーブルから全て取得する
-    	$posts = Post::where('display', 1)->latest()->with('user')->get();
-    	$comments = Comment::where('display', 1)->latest()->with('post')->get();
-		$user = Auth::user();
-		//ログイン時とゲストで場合わけ
-		if($user == null){
-		return view('index', [
-			'pageVer' => $pageVer,
-			'posts' => $posts,
-			'comments' => $comments,
-			'uvls' => null,
-		]);
-		}else{
-    	$uvls = VoteLog::where('user_id', $user->id)->get();
-		return view('index', [
-			'pageVer' => $pageVer,
-			'posts' => $posts,
-			'comments' => $comments,
-			'uvls' => $uvls,
-		]);
-		}
+
+    	if($pageVer == 1){
+			//必要な情報をテーブルから全て取得する
+	    	$posts = Post::where('display', 0)->latest()->with('user')->get();
+	    	$comments = Comment::where('display', 0)->latest()->with('post')->get();
+			$user = Auth::user();
+			//ログイン時とゲストで場合わけ
+			if($user == null){
+			return view('index', [
+				'posts' => $posts,
+				'comments' => $comments,
+				'user' => $user,
+				'uvls' => null,
+			]);
+			}else{
+	    	$uvls = VoteLog::where('user_id', $user->id)->get();
+			return view('index', [
+				'posts' => $posts,
+				'comments' => $comments,
+				'user' => $user,
+				'uvls' => $uvls,
+			]);
+			}
+    	}elseif($pageVer == 2){
+    		$posts = Post::where('display', 0)->orderBy('point', 'desc')->with('user')->get();
+    		$comments = Comment::where('display', 0)->latest()->get();
+    		return view('index2',[
+				'posts' => $posts,
+				'comments' => $comments,
+    		]);
+    	}
     }
 
 	//新規投稿時の処理
@@ -66,8 +76,8 @@ class PostController extends Controller
     	$user = Auth::user();
     	$post_user = User::where('id', $user->id);
     	$post_time = $post_user->value('post_time');
-    	if($post_time <= 4){
-    		$post_user->increment('post_time');
+    	if($post_time >= 1){
+    		$post_user->decrement('post_time');
 	    	$post = Post::create([
 	    		'user_id' => $user->id,
 	    		'body' => $request->body,
@@ -82,16 +92,16 @@ class PostController extends Controller
 		$user = Auth::user();
 		$vote_user = User::where('id', $user->id);
 		$vote_time = $vote_user->value('vote_time');
-		if($vote_time <= 3 && $request->data[0] == 0){
+		if($vote_time >= 1 && $request->data[0] == 0){
 			//ユーザーの投票回数を加算
-			$vote_user->increment('vote_time');
+			$vote_user->decrement('vote_time');
 			//投票ログの登録
 			$vote_log = VoteLog::create([
 				'user_id' => $user->id,
 				'post_id' => $request->data[1],
 			]);
 			//投票された俳句にポイントを加算
-			$voted_post = Post::where('id', $request->post_id);
+			$voted_post = Post::where('id', $request->data[1]);
 			$voted_post->increment('point');
 			return redirect('/');
 		}else{
@@ -99,6 +109,23 @@ class PostController extends Controller
 		}
 	}
 
+	public function edit($post_id){
+		$post = Post::findOrFail($post_id);
+		$comments = Comment::where('display', 0)->latest()->get();
+    	return view('post.edit', [
+    		'post' => $post,
+    		'comments' => $comments,
+    	]);
+	}
 
-
+	public function update(Request $request, $post_id){
+    	$post = Post::findOrFail($post_id);
+    	if($post->correct_time >= 1){
+	    	$post->decrement('correct_time');
+	    	$post->update([
+	    		'body' => $request->body,
+	    	]);
+    	}
+		return redirect('/');
+	}
 }
