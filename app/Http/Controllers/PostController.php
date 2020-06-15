@@ -42,6 +42,7 @@ class PostController extends Controller
     	if($pageVer == 1){
 			//必要な情報をテーブルから全て取得する
 	    	$posts = Post::where('display', 0)->latest()->with('user')->get();
+	    	$post_count = Post::where('display', 0)->count();
 	    	$comments = Comment::where('display', 0)->latest()->with('post')->get();
 			$user = Auth::user();
 			//ログイン時とゲストで場合わけ
@@ -51,6 +52,7 @@ class PostController extends Controller
 				'comments' => $comments,
 				'user' => $user,
 				'uvls' => null,
+				'No' => $post_count,
 			]);
 			}else{
 	    	$uvls = VoteLog::where('user_id', $user->id)->get();
@@ -59,6 +61,7 @@ class PostController extends Controller
 				'comments' => $comments,
 				'user' => $user,
 				'uvls' => $uvls,
+				'No' => $post_count,
 			]);
 			}
     	}elseif($pageVer == 2){

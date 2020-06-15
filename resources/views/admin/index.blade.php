@@ -4,12 +4,12 @@
 <div class="container">
  	<h1>俳句一覧</h1>
  	<p>投句、投票はログインユーザーでなければ行えません。</p>
- 	<p>１週間で1人5句まで投句、4回まで投票できます。</p>
+ 	<p>１週間で1人5句まで投句、4回まで選句できます。</p>
  	<p></p>
  	@guest
  	@else
-	 	<p>今週は残り{{$user->post_time}}回投稿できます。残り{{$user->vote_time}}回投票できます。</p>
-	 	<p>自分の投句は黄色で表示されます。自分が投票した俳句は青色で表示されます。</p>
+	 	<p>今週は残り{{$user->post_time}}回投句できます。残り{{$user->vote_time}}回選句できます。</p>
+	 	<p>自分の投句した俳句は黄色で表示されます。自分が選句した俳句は青色で表示されます。</p>
 	 	<p>自分の投句にのみ、管理人のコメントが表示されます。</p>
  	@endguest
  	<form method="POST" action="{{ action('AdminPostController@store') }}">
@@ -18,10 +18,10 @@
  			<label for="body">投句欄</label>
  			<textarea class="form-control" id="body" name="body" rows="2"></textarea>
  		</div>
- 		<button type="submit" class="btn btn-primary">作成</button>
+ 		<button type="submit" class="btn btn-primary">投句</button>
  	</form>
 
-	<?php $i = 1 ?>
+	<?php $i = $No ?>
 	@foreach($posts as $post)
 	<div class="card">
 		<?php $voted = 0 ?>
@@ -51,7 +51,7 @@
 				    @method('PUT')
 				    <input type="hidden" name="data[0]" value="{{$voted}}">
 				    <input type="hidden" name="data[1]" value="{{$post->id}}">
-				    <input type="submit" value="投票" class="btn btn-success"></input>
+				    <input type="submit" value="選句" class="btn btn-success"></input>
 				</form>
 			@endif
 			@if(Auth::user()->id == $post->user_id)
@@ -74,7 +74,7 @@
 				@endif
 			@endforeach
 	</div>
-	<?php $i = $i + 1 ?>
+	<?php $i = $i - 1 ?>
 	@endforeach
 </div>
 @endsection
