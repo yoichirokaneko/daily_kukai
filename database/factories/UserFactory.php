@@ -20,9 +20,10 @@ use Illuminate\Support\Str;
 $factory->define(User::class, function (Faker $faker) {
 	static $number = 1;
     return [
-        'name' => $faker->name,
+        'family_name' => $faker->lastName,
+        'haiku_name' => $faker->firstName,
         'email' => 'user' . $number . '@user.com',
-        'password' => bcrypt('user' . $number . 'user' . $number++),
+        'password' => bcrypt('user' . $number++),
         'prefecture' => $faker->city,
         'remember_token' => Str::random(10),
         'created_at' => now(),

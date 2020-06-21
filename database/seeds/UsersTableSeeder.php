@@ -16,9 +16,10 @@ class UsersTableSeeder extends Seeder
     {
 	    $faker = Faker::create('ja_JP');
     	DB::table('users')->insert([
-	    	'name' => 'admin',
+	    	'family_name' => 'admin',
+	    	'haiku_name' => 'haigou',
 		    'email' => 'admin@admin.com',
-			'password' => bcrypt('adminadmin'),
+			'password' => bcrypt('admin'),
 			'prefecture' => $faker->city,
 			'is_admin' => 1,
 			'remember_token' => Str::random(10),

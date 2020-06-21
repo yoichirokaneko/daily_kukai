@@ -16,7 +16,7 @@
 	<div class="card">
 		<div class="card-body">
 		 	<h5>{!! nl2br(e($post->body)) !!}</h5>
-			<p class="card-text">投稿者：{{$post->user->name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
+			<p class="card-text">投稿者：{{$post->user->family_name}}　{{$post->user->haiku_name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
 			<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
 		</div>
 		@foreach($comments as $comment)

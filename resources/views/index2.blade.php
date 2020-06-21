@@ -5,12 +5,20 @@
  	<h1>今週の結果発表</h1>
  	今週の結果発表です。
 
-	<?php $i = 1 ?>
+
 	@foreach($posts as $post)
 	<div class="card">
 		<div class="card-body">
-		<h5><?php echo $i ?>：{!! nl2br(e($post->body)) !!}</h5>
-		<p class="card-text">投稿者：{{$post->user->name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
+		<h5>{{$post->post_no}}：{!! nl2br(e($post->body)) !!}</h5>
+		<p class="card-text">
+			投稿者：{{$post->user->family_name}}　{{$post->user->haiku_name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}　
+			@foreach($vote_logs as $vote_log)
+				@if($vote_log->post_id == $post->id)
+					{{$vote_log->user->haiku_name}}　
+				@endif
+			@endforeach
+		</p>
+		
 		<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
 		</div>
 		@foreach($comments as $comment)
@@ -22,7 +30,6 @@
 			@endif
 		@endforeach
 	</div>
-	<?php $i = $i + 1 ?>
 	@endforeach
 </div>
 @endsection

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\PageLog;
 use App\Post;
 use App\Comment;
+use App\VoteLog;
+
 
 class AdminPastController extends Controller
 {
@@ -15,11 +17,13 @@ class AdminPastController extends Controller
     }
 
     public function show($id, $pagetitle){
-        $posts = Post::where('display', $id)->orderBy('point', 'desc')->with('user')->get();  
-        $comments = Comment::where('display', $id)->latest()->get();    
+        $posts = Post::where('display', $id)->orderBy('point', 'desc')->with('user')->get();
+        $comments = Comment::where('display', $id)->latest()->get();
+         $vote_logs = VoteLog::where('display', $id)->with(['user', 'post'])->get();
         return view('admin.pagelog.show',[
                 'posts' => $posts,
                 'comments' => $comments,
+                'vote_logs' => $vote_logs,
                 'pagetitle' => $pagetitle,
             ]);
     }

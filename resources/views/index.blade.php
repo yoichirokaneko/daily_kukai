@@ -4,6 +4,8 @@
 <div class="container">
  	<h1>俳句一覧</h1>
  	<p>投句はログインユーザーでなければ行えません。</p>
+ 	<p>ログインは右上のログインボタンより行ってください。</p>
+ 	<p>初めての方は新規登録ボタンよりユーザー登録を行ってください。</p>
  	<p>１週間で1人5句まで投句、4回まで選句できます。</p>
  	@guest
  	@else
@@ -20,7 +22,7 @@
  		<button type="submit" class="btn btn-primary">投句</button>
  	</form>
 
-	<?php $i = $No ?>
+
 	@foreach($posts as $post)
 	<div class="card">
 		<?php $voted = 0 ?>
@@ -41,7 +43,7 @@
 				}
 			?>
 		">
-		<h5><?php echo $i ?>：{!! nl2br(e($post->body)) !!}</h5>
+		<h5>{{$post->post_no}}：{!! nl2br(e($post->body)) !!}</h5>
 		<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
 		@guest
 		@else
@@ -73,7 +75,6 @@
 			@endif
 		@endguest
 	</div>
-	<?php $i = $i - 1 ?>
 	@endforeach
 </div>
 @endsection

@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    ログインできました。左上の「daily_kukai」ボタンをクリックすると、投句画面へ遷移します。
                 </div>
             </div>
         </div>

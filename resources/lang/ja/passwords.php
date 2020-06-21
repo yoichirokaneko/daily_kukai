@@ -12,7 +12,7 @@ return [
     | has failed, such as for an invalid token or invalid new password.
     |
     */
-    'password' => 'パスワードは6文字以上にして、確認用入力欄と一致させてください。'
+    'password' => 'パスワードは4文字以上にして、確認用入力欄と一致させてください。',
     'reset' => 'パスワードをリセットしました。',
     'sent' => 'パスワードリセット用URLを送信しました。',
     'throttled' => 'Please wait before retrying.',

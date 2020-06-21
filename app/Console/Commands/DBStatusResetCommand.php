@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\User;
 use App\Post;
 use App\Comment;
+use App\VoteLog;
 use App\PageLog;
 use Carbon\Carbon;
 
@@ -50,6 +51,7 @@ class DBStatusResetCommand extends Command
 
         Post::increment('display');
         Comment::increment('display');
+        VoteLog::increment('display');
         
         $now = Carbon::now();
         $title = $now->format('ymd');

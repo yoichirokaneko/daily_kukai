@@ -10,7 +10,8 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
+                        <p class="text-center">登録した自分のメールアドレスとパスワードを入力してください。</p>
+                        <p class="text-center">入力後、ログインボタンをクリックしてください。</p>
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 

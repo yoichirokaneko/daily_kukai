@@ -41,23 +41,23 @@ class AdminPostController extends Controller
 		if($pageVer == 1){
         //必要な情報をテーブルから全て取得する
             $posts = Post::where('display', 0)->latest()->with('user')->get();
-            $post_count = Post::where('display', 0)->count();
             $comments = Comment::where('display', 0)->latest()->with('post')->get();
             $user = Auth::user();
-            $uvls = VoteLog::where('user_id', $user->id)->get();
+            $uvls = VoteLog::where('display', 0)->where('user_id', $user->id)->get();
             return view('admin.index', [
                 'posts' => $posts,
                 'comments' => $comments,
                 'user' => $user,
                 'uvls' => $uvls,
-                'No' => $post_count,
             ]);
         }elseif($pageVer == 2){
             $posts = Post::where('display', 0)->orderBy('point', 'desc')->with('user')->get();
             $comments = Comment::where('display', 0)->latest()->get();
+            $vote_logs = VoteLog::where('display', 0)->with(['user', 'post'])->get();
             return view('admin.index2',[
                 'posts' => $posts,
                 'comments' => $comments,
+                'vote_logs' => $vote_logs,
             ]);
         }
     }
@@ -67,9 +67,12 @@ class AdminPostController extends Controller
         $user = Auth::user();
         $post_user = User::where('id', $user->id);
         $post_time = $post_user->value('post_time');
+        $post_count = Post::where('display', 0)->count();
+        $post_no = $post_count + 1;
         if($post_time >= 1){
             $post_user->decrement('post_time');
             $post = Post::create([
+                'post_no' => $post_no,
                 'user_id' => $user->id,
                 'body' => $request->body,
             ]);

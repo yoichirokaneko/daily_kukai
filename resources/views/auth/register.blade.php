@@ -8,16 +8,32 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
+                    <p>ご自分の苗字、俳号、都道府県、メールアドレス、パスワードを入力して、新規登録ボタンをクリックしてください。ユーザー情報が登録されます。</p>
+                    <p>パスワードは最低4文字以上必要です。パスワード確認用欄にはパスワード欄と同じ値を入力してください。</p>
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                            <label for="family_name" class="col-md-4 col-form-label text-md-right">{{ __('Family Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <input id="family_name" type="text" class="form-control @error('family_name') is-invalid @enderror" name="family_name" value="{{ old('family_name') }}" required autocomplete="family_name" autofocus>
 
-                                @error('name')
+                                @error('family_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="haiku_name" class="col-md-4 col-form-label text-md-right">{{ __('Haiku Name') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="haiku_name" type="text" class="form-control @error('haiku_name') is-invalid @enderror" name="haiku_name" value="{{ old('haiku_name') }}" required autocomplete="haiku_name" autofocus>
+
+                                @error('haiku_name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

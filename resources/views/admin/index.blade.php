@@ -4,6 +4,8 @@
 <div class="container">
  	<h1>俳句一覧</h1>
  	<p>投句、投票はログインユーザーでなければ行えません。</p>
+	<p>ログインは右上のログインボタンより行ってください。</p>
+ 	<p>初めての方は新規登録ボタンよりユーザー登録を行ってください。</p>
  	<p>１週間で1人5句まで投句、4回まで選句できます。</p>
  	<p></p>
  	@guest
@@ -21,7 +23,6 @@
  		<button type="submit" class="btn btn-primary">投句</button>
  	</form>
 
-	<?php $i = $No ?>
 	@foreach($posts as $post)
 	<div class="card">
 		<?php $voted = 0 ?>
@@ -42,8 +43,8 @@
 				}
 			?>
 		">
-		<h5><?php echo $i ?>：{!! nl2br(e($post->body)) !!}</h5>
-		<p class="card-text">投稿者：{{$post->user->name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
+		<h5>{{$post->post_no}}：{!! nl2br(e($post->body)) !!}</h5>
+		<p class="card-text">投稿者：{{$post->user->family_name}}　{{$post->user->haiku_name}}　都道府県：{{$post->user->prefecture}}　得票：{{$post->point}}</p>
 		<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
 			@if(Auth::user()->id <> $post->user_id)
 				<form method="POST" action="{{action('AdminPostController@point')}}">
@@ -74,7 +75,6 @@
 				@endif
 			@endforeach
 	</div>
-	<?php $i = $i - 1 ?>
 	@endforeach
 </div>
 @endsection
