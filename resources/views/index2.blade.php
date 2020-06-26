@@ -5,7 +5,6 @@
  	<h1>今週の結果発表</h1>
  	今週の結果発表です。
 
-
 	@foreach($posts as $post)
 	<div class="card">
 		<div class="card-body">
@@ -18,7 +17,6 @@
 				@endif
 			@endforeach
 		</p>
-		
 		<p class="card-text">投稿日時：{{$post->created_at}}　更新日時：{{$post->updated_at}}</p>
 		</div>
 		@foreach($comments as $comment)
