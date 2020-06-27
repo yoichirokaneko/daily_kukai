@@ -24,8 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:dbstatusreset')->everyMinute();
-        // weeklyOn(0, '12:00');
+        $schedule->command('command:dbstatusreset')->weeklyOn(0, '12:00');
     }
 
     /**
