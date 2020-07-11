@@ -67,8 +67,13 @@ class AdminPostController extends Controller
         $user = Auth::user();
         $post_user = User::where('id', $user->id);
         $post_time = $post_user->value('post_time');
-        $post_count = Post::where('display', 0)->count();
-        $post_no = $post_count + 1;
+        $posted = Post::where('display', 0)->latest()->first();
+        if($posted != null){
+            $posted_number = $posted->post_no;
+            $post_no = $posted_number + 1;
+        }else{
+            $post_no = 1;
+        }
         if($post_time >= 1){
             $post_user->decrement('post_time');
             $post = Post::create([
