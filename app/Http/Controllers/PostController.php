@@ -41,7 +41,7 @@ class PostController extends Controller
 
     	if($pageVer == 1){
 			//必要な情報をテーブルから全て取得する
-	    	$posts = Post::where('display', 0)->latest()->with('user')->get();
+	    	$posts = Post::where('display', 0)->latest("updated_at")->with('user')->get();
 	    	$comments = Comment::where('display', 0)->latest()->with('post')->get();
 			$user = Auth::user();
 			//ログイン時とゲストで場合わけ
